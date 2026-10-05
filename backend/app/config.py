@@ -20,11 +20,12 @@ class Settings(BaseSettings):
             return str((BASE_DIR / p).resolve())
         return str(p.resolve())
     CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ]
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://neural-trail.vercel.app",
+]
 
     class Config:
         env_file = str(BASE_DIR / ".env")
