@@ -114,6 +114,8 @@ async def load_custom_test_model():
             message=f"Successfully loaded {meta['model_name']}",
             metadata=meta,
         )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
