@@ -502,7 +502,25 @@ export const WorkstationMaster: React.FC = () => {
 
               {activeTab === 'TRACE' && <NeuralXRayView />}
 
-              {activeTab === 'STRESS' && <WhatIfLabView initialSampleId={selectedSample?.id} />}
+              {activeTab === 'STRESS' && (
+                <WhatIfLabView 
+                  initialSampleId={selectedSample?.id} 
+                  selectedClusterId={selectedClusterId}
+                  onSwitchToTab={setActiveTab}
+                  onRunRemediation={async () => {
+                    await handleRunNewTrial({
+                      type: 'invariant_mitigation',
+                      provider: 'local',
+                      parameters: {
+                        cluster_id: selectedClusterId || (blindSpots[0]?.id ?? 'cluster-0'),
+                        intensity: 20.0,
+                        apply_mitigation: true,
+                      },
+                    });
+                    setActiveTab('IMPROVE');
+                  }}
+                />
+              )}
 
               {activeTab === 'IMPROVE' && (
                 <BeforeAfterView 

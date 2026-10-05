@@ -23,6 +23,7 @@ import { mlApiClient } from '../services/mlApiClient';
 import { PageHeader } from '../components/common/PageHeader';
 import { Card } from '../components/common/Card';
 import { MetricCard } from '../components/common/MetricCard';
+import { formatAccuracy, formatFlipRate } from '../utils/formatters';
 
 export const ResearchAssistant: React.FC = () => {
   const [selectedClusterId, setSelectedClusterId] = useState<string>('bs-01');
@@ -234,19 +235,19 @@ export const ResearchAssistant: React.FC = () => {
               <div className="p-3 rounded-md bg-white/[0.02] border border-white/10">
                 <span className="text-[11px] font-sans text-white/40 block">OVERALL ACCURACY</span>
                 <span className="font-mono text-lg font-semibold text-white mt-0.5 block">
-                  {(evidence.overall_accuracy * 100).toFixed(1)}%
+                  {formatAccuracy(evidence.overall_accuracy)}
                 </span>
               </div>
               <div className="p-3 rounded-md bg-white/[0.02] border border-white/10">
                 <span className="text-[11px] font-sans text-white/40 block">CLUSTER ACCURACY</span>
                 <span className="font-mono text-lg font-semibold text-[#ff007f] mt-0.5 block">
-                  {(evidence.blind_spot_accuracy * 100).toFixed(1)}%
+                  {formatAccuracy(evidence.blind_spot_accuracy)}
                 </span>
               </div>
               <div className="p-3 rounded-md bg-white/[0.02] border border-white/10">
                 <span className="text-[11px] font-sans text-white/40 block">ROTATION FLIP RATE</span>
                 <span className="font-mono text-lg font-semibold text-[#ffb300] mt-0.5 block">
-                  {(evidence.rotation_flip_rate * 100).toFixed(1)}%
+                  {formatFlipRate(evidence.rotation_flip_rate)}
                 </span>
               </div>
               <div className="p-3 rounded-md bg-white/[0.02] border border-white/10">

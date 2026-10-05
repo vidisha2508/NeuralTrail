@@ -33,7 +33,8 @@ class AnalysisEvidenceEngine:
         # Model overall accuracy
         overall_acc = 0.81
         if summary.get("has_data") and summary.get("metrics"):
-            overall_acc = round(float(summary["metrics"]["accuracy"]) / 100.0, 2)
+            raw_overall = float(summary["metrics"]["accuracy"])
+            overall_acc = round(raw_overall / 100.0 if raw_overall > 1.0 else raw_overall, 4)
 
         # Target blind spot selection
         target_spot = None
@@ -46,7 +47,8 @@ class AnalysisEvidenceEngine:
         if target_spot:
             c_id = target_spot["id"]
             c_name = target_spot.get("name", f"Cluster {c_id}")
-            blind_spot_acc = round(float(target_spot.get("accuracy", 0.42)), 2)
+            raw_acc = float(target_spot.get("accuracy", 42.0))
+            blind_spot_acc = round(raw_acc / 100.0 if raw_acc > 1.0 else raw_acc, 4)
             raw_error = target_spot.get("common_prediction_error", "cat -> dog")
             sample_count = target_spot.get("sample_count", 28)
         else:

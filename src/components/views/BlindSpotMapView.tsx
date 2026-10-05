@@ -14,6 +14,7 @@ import {
 import { PageHeader } from '../common/PageHeader';
 import { Card } from '../common/Card';
 import { MetricCard } from '../common/MetricCard';
+import { formatAccuracy } from '../../utils/formatters';
 
 interface BlindSpotMapViewProps {
   samples: Sample[];
@@ -572,7 +573,7 @@ export const BlindSpotMapView: React.FC<BlindSpotMapViewProps> = ({
                 {/* Accuracy */}
                 <div className="text-right w-24">
                   <span className="text-[#ff007f] font-bold">
-                    {spot.accuracy}%
+                    {formatAccuracy(spot.accuracy)}
                   </span>
                   <span className="text-white/40 text-[10px] ml-1">acc</span>
                 </div>

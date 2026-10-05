@@ -11,17 +11,28 @@ import {
   Zap,
   ShieldCheck,
   ImageIcon,
+  ArrowRight,
 } from 'lucide-react';
 import { mlApiClient } from '../../services/mlApiClient';
+import { WorkstationTab } from '../../types/neuralTrail';
 import { PageHeader } from '../common/PageHeader';
 import { Card } from '../common/Card';
 import { ProgressBar } from '../common/ProgressBar';
 
 interface WhatIfLabViewProps {
   initialSampleId?: string;
+  selectedClusterId?: string | null;
+  onSwitchToTab?: (tab: WorkstationTab) => void;
+  onRunRemediation?: () => Promise<void> | void;
 }
 
-export const WhatIfLabView: React.FC<WhatIfLabViewProps> = ({ initialSampleId }) => {
+export const WhatIfLabView: React.FC<WhatIfLabViewProps> = ({
+  initialSampleId,
+  selectedClusterId,
+  onSwitchToTab,
+  onRunRemediation,
+}) => {
+  const [isRemediating, setIsRemediating] = useState<boolean>(false);
   // 6 Perturbation slider states
   const [rotation, setRotation] = useState<number>(16);
   const [noise, setNoise] = useState<number>(10);
@@ -445,16 +456,20 @@ export const WhatIfLabView: React.FC<WhatIfLabViewProps> = ({ initialSampleId })
                     BEFORE (CANONICAL)
                   </span>
 
-                  <div className="w-36 h-36 bg-[#080210] rounded-lg border border-white/10 flex items-center justify-center p-1 relative overflow-hidden">
+                  <div className="w-36 h-36 bg-[#080210] rounded-lg border border-white/10 flex items-center justify-center p-2 relative overflow-hidden">
                     {experimentResult.original_image_url ? (
                       <img
                         src={experimentResult.original_image_url}
                         alt="Canonical Input"
-                        className="w-full h-full object-cover rounded"
+                        className="w-full h-full object-contain rounded"
+                        style={{ imageRendering: 'pixelated' }}
                       />
                     ) : (
-                      <div className="font-display font-bold text-5xl text-[#00ff88] select-none">
-                        {experimentResult.original_prediction_idx ?? 8}
+                      <div className="flex flex-col items-center justify-center text-center p-2">
+                        <div className="font-display font-bold text-2xl text-[#00ff88]">
+                          {experimentResult.original_prediction}
+                        </div>
+                        <span className="text-[10px] text-white/40 font-mono mt-1">Class #{experimentResult.original_prediction_idx}</span>
                       </div>
                     )}
                   </div>
@@ -488,22 +503,26 @@ export const WhatIfLabView: React.FC<WhatIfLabViewProps> = ({ initialSampleId })
                     AFTER (PERTURBED)
                   </span>
 
-                  <div className="w-36 h-36 bg-[#080210] rounded-lg border border-white/10 flex items-center justify-center p-1 relative overflow-hidden">
+                  <div className="w-36 h-36 bg-[#080210] rounded-lg border border-white/10 flex items-center justify-center p-2 relative overflow-hidden">
                     {experimentResult.perturbed_image_url ? (
                       <img
                         src={experimentResult.perturbed_image_url}
                         alt="Perturbed Input"
-                        className="w-full h-full object-cover rounded"
+                        className="w-full h-full object-contain rounded"
+                        style={{ imageRendering: 'pixelated' }}
                       />
                     ) : (
-                      <div
-                        className="font-display font-bold text-5xl select-none transition-transform duration-150"
-                        style={{
-                          transform: `rotate(${rotation}deg) scale(${1 - crop / 100})`,
-                          color: isFlipped ? '#FF007F' : '#00F0FF',
-                        }}
-                      >
-                        {experimentResult.perturbed_prediction_idx ?? 3}
+                      <div className="flex flex-col items-center justify-center text-center p-2">
+                        <div
+                          className="font-display font-bold text-2xl transition-transform duration-150"
+                          style={{
+                            transform: `rotate(${rotation}deg)`,
+                            color: isFlipped ? '#ff007f' : '#00f0ff',
+                          }}
+                        >
+                          {experimentResult.perturbed_prediction}
+                        </div>
+                        <span className="text-[10px] text-white/40 font-mono mt-1">Class #{experimentResult.perturbed_prediction_idx}</span>
                       </div>
                     )}
                   </div>
@@ -575,6 +594,61 @@ export const WhatIfLabView: React.FC<WhatIfLabViewProps> = ({ initialSampleId })
                   </div>
                 </div>
               )}
+
+              {/* Connected Stage Progression: STRESS → GEMMA / IMPROVE */}
+              <div className="pt-4 mt-4 border-t border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-white/70 uppercase">
+                    Stage Progression (Step 03 → 04 / 06)
+                  </span>
+                  <span className="text-[11px] font-sans text-white/40">
+                    {isFlipped ? 'Failure Boundary Triggered' : 'Stress Response Measured'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    onClick={async () => {
+                      if (onRunRemediation) {
+                        setIsRemediating(true);
+                        try {
+                          await onRunRemediation();
+                        } finally {
+                          setIsRemediating(false);
+                        }
+                      } else if (onSwitchToTab) {
+                        onSwitchToTab('IMPROVE');
+                      }
+                    }}
+                    disabled={isRemediating}
+                    className="w-full font-mono text-xs font-semibold px-4 py-2.5 rounded-md bg-[#00ff88]/15 border border-[#00ff88]/40 text-[#00ff88] hover:bg-[#00ff88]/25 flex items-center justify-center gap-2 transition-all shadow-neon-cyan disabled:opacity-50"
+                  >
+                    {isRemediating ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>EXECUTING MITIGATION...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#00ff88]" />
+                        <span>Run Mitigation → View Improvement</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+
+                  {onSwitchToTab && (
+                    <button
+                      onClick={() => onSwitchToTab('RESEARCH')}
+                      className="w-full font-mono text-xs font-semibold px-4 py-2.5 rounded-md bg-[#d500f9]/15 border border-[#d500f9]/40 text-[#d500f9] hover:bg-[#d500f9]/25 flex items-center justify-center gap-2 transition-all"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-[#d500f9]" />
+                      <span>Formulate Hypothesis (Gemma 4)</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
             </Card>
           </>
         )}

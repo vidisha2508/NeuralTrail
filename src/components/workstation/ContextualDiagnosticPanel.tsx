@@ -14,6 +14,7 @@ import {
   Brain,
   Sparkles
 } from 'lucide-react';
+import { formatAccuracy } from '../../utils/formatters';
 
 interface ContextualDiagnosticPanelProps {
   selectedBlindSpot: BlindSpot | null;
@@ -134,7 +135,7 @@ export const ContextualDiagnosticPanel: React.FC<ContextualDiagnosticPanelProps>
               <div className="p-2.5 rounded bg-white/[0.02] border border-white/10">
                 <span className="text-[10px] text-white/40 block">ACCURACY</span>
                 <span className="text-lg font-bold text-[#ff007f]">
-                  {spot.accuracy}%
+                  {formatAccuracy(spot.accuracy)}
                 </span>
               </div>
 

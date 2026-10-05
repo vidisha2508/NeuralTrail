@@ -26,6 +26,7 @@ import {
   GemmaInterpretationResponse
 } from '../../types/neuralTrail';
 import { mlApiClient } from '../../services/mlApiClient';
+import { formatAccuracy, formatFlipRate } from '../../utils/formatters';
 
 interface GemmaResearcherConsoleProps {
   selectedClusterId: string | null;
@@ -327,15 +328,15 @@ export const GemmaResearcherConsole: React.FC<GemmaResearcherConsoleProps> = ({
                 </div>
                 <div className="p-1.5 rounded bg-[#100222] border border-white/10">
                   <span className="text-white/60 block text-[9px]">OVERALL ACCURACY:</span>
-                  <span className="text-[#00ff88] font-bold">{(evidence.overall_accuracy * 100).toFixed(1)}%</span>
+                  <span className="text-[#00ff88] font-bold">{formatAccuracy(evidence.overall_accuracy)}</span>
                 </div>
                 <div className="p-1.5 rounded bg-[#100222] border border-[#ff007f]/40">
                   <span className="text-[#ff007f] block text-[9px]">BLIND SPOT ACCURACY:</span>
-                  <span className="text-[#ff007f] font-bold">{(evidence.blind_spot_accuracy * 100).toFixed(1)}%</span>
+                  <span className="text-[#ff007f] font-bold">{formatAccuracy(evidence.blind_spot_accuracy)}</span>
                 </div>
                 <div className="p-1.5 rounded bg-[#100222] border border-[#ffb300]/40">
                   <span className="text-[#ffb300] block text-[9px]">ROTATION FLIP RATE:</span>
-                  <span className="text-[#ffb300] font-bold">{(evidence.rotation_flip_rate * 100).toFixed(1)}%</span>
+                  <span className="text-[#ffb300] font-bold">{formatFlipRate(evidence.rotation_flip_rate)}</span>
                 </div>
                 <div className="col-span-2 p-1.5 rounded bg-[#100222] border border-white/10 flex items-center justify-between">
                   <span className="text-white/60 text-[9px]">COMMON ERROR:</span>

@@ -1,6 +1,7 @@
 import io
+import torch
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Query, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from typing import Optional, List
 
 from ..schemas import (
@@ -124,6 +125,50 @@ async def load_custom_test_model():
 async def unload_model():
     model_manager.unload_model()
     return {"success": True, "message": "Model unloaded. Neural Trail returned to standby state."}
+
+
+@router.post("/model/export", summary="Export Active Model (.pth Checkpoint)")
+@router.get("/model/export", summary="Export Active Model (.pth Checkpoint)")
+async def export_model():
+    """
+    Exports the currently active model's PyTorch state dictionary as a downloadable .pth checkpoint.
+    """
+    if not model_manager.is_loaded or not model_manager.active_adapter:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No model is currently loaded to export.",
+        )
+    try:
+        adapter = model_manager.active_adapter
+        buffer = io.BytesIO()
+        if hasattr(adapter, "model") and adapter.model is not None:
+            torch.save(adapter.model.state_dict(), buffer)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Active adapter does not contain an exportable PyTorch model.",
+            )
+        buffer.seek(0)
+        meta = adapter.metadata()
+        raw_name = meta.get("model_name", "model").lower()
+        clean_name = "".join(c if c.isalnum() or c in ("_", "-") else "_" for c in raw_name)
+        filename = f"{clean_name}_checkpoint.pth"
+
+        return StreamingResponse(
+            buffer,
+            media_type="application/octet-stream",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "Access-Control-Expose-Headers": "Content-Disposition",
+            },
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Model export failed: {str(e)}",
+        )
 
 
 @router.post("/model/upload", response_model=ModelLoadResponse, summary="Upload & Validate PyTorch (.pt / .pth) Model")

@@ -107,8 +107,10 @@ class LocalComputeProvider(ComputeProvider):
             spots = analysis_manager.get_blind_spots()
             target_spot = next((s for s in spots if s["id"] == cid), None) or (spots[0] if spots else None)
 
-            baseline_acc = round(float(target_spot.get("accuracy", 0.42)), 2) if target_spot else 0.42
-            baseline_flip = round(float(target_spot.get("failure_rate", 0.37)), 2) if target_spot else 0.37
+            raw_acc = float(target_spot.get("accuracy", 42.0)) if target_spot else 42.0
+            baseline_acc = round(raw_acc / 100.0 if raw_acc > 1.0 else raw_acc, 4)
+            raw_flip = float(target_spot.get("failure_rate", 0.37)) if target_spot else 0.37
+            baseline_flip = round(raw_flip / 100.0 if raw_flip > 1.0 else raw_flip, 4)
             sample_count = target_spot.get("sample_count", 28) if target_spot else 28
 
             with self._lock:

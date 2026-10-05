@@ -481,9 +481,29 @@ class AnalysisManager:
         sid = target_sample["id"]
         img = images.get(sid)
         if img is None:
-            gen = BenchmarkDatasetGenerator(seed=42)
-            fresh_samples = {s.id: s.image for s in gen.generate(count_per_class=10)}
-            img = fresh_samples.get(sid) or fresh_samples.get("SMP-001")
+            if model_manager.active_model_type == "custom":
+                try:
+                    from pathlib import Path
+                    import importlib.util
+                    ds_path = str(Path(__file__).resolve().parents[3] / "custom" / "dataset.py")
+                    spec = importlib.util.spec_from_file_location("custom_dataset_mod", ds_path)
+                    if spec and spec.loader:
+                        mod = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(mod)
+                        shape_ds = mod.ShapeDataset(size=50, seed=42)
+                        idx = int(sid.replace("SMP-", "")) - 1 if "SMP-" in sid else 0
+                        idx = max(0, min(idx, len(shape_ds) - 1))
+                        tensor, _ = shape_ds[idx]
+                        arr = (tensor.permute(1, 2, 0).numpy() * 255.0).clip(0, 255).astype(np.uint8)
+                        img = Image.fromarray(arr)
+                except Exception:
+                    img = None
+            if img is None:
+                gen = BenchmarkDatasetGenerator(seed=42)
+                fresh_samples = {s.id: s.image for s in gen.generate(count_per_class=10)}
+                img = fresh_samples.get(sid) or fresh_samples.get("SMP-001")
+            if img is None:
+                img = Image.new("RGB", (32, 32), (40, 40, 60))
 
         adapter = model_manager.active_adapter
         engine = WhatIfExperimentEngine(adapter)

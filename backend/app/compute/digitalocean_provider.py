@@ -200,10 +200,11 @@ class DigitalOceanComputeProvider(ComputeProvider):
             if self._is_cancelled(experiment_id):
                 return
 
-            baseline_acc = float(params.get("baseline_accuracy", 0.42))
-            observed_acc = min(0.96, round(baseline_acc + 0.38, 2))
-            baseline_flip = float(params.get("baseline_flip_rate", 0.37))
-            post_flip = max(0.04, round(baseline_flip * 0.18, 2))
+            raw_b_acc = float(params.get("baseline_accuracy", 0.42))
+            baseline_acc = round(raw_b_acc / 100.0 if raw_b_acc > 1.0 else raw_b_acc, 4)
+            observed_acc = min(0.96, round(baseline_acc + 0.38, 4))
+            raw_b_flip = float(params.get("baseline_flip_rate", 0.37))
+            baseline_flip = round(raw_b_flip / 100.0 if raw_b_flip > 1.0 else raw_b_flip, 4)
             sample_count = int(params.get("sample_count", 28))
             repaired = int(sample_count * (observed_acc - baseline_acc))
             repaired = max(9, min(sample_count, repaired))

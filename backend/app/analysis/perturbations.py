@@ -202,12 +202,22 @@ class PerturbationComposer:
         return transformed
 
 
-def image_to_base64_data_url(image: Image.Image, format: str = "JPEG", quality: int = 85) -> str:
-    """Encodes PIL Image to browser-renderable data URL."""
+def image_to_base64_data_url(image: Image.Image, format: str = "PNG", quality: int = 85) -> str:
+    """Encodes PIL Image to browser-renderable data URL safely across any image mode."""
     buffered = io.BytesIO()
-    image.save(buffered, format=format, quality=quality)
+    fmt = format.upper()
+    if fmt == "JPEG":
+        if image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
+        image.save(buffered, format="JPEG", quality=quality)
+        mime = "jpeg"
+    else:
+        if image.mode not in ("RGB", "RGBA", "L"):
+            image = image.convert("RGB")
+        image.save(buffered, format="PNG")
+        mime = "png"
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
-    return f"data:image/{format.lower()};base64,{img_str}"
+    return f"data:image/{mime};base64,{img_str}"
 
 
 perturbation_composer = PerturbationComposer()

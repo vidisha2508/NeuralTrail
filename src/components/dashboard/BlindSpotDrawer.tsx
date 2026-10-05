@@ -4,6 +4,7 @@ import { BlindSpot, Sample } from '../../types/neuralTrail';
 import { StatusBadge } from '../common/StatusBadge';
 import { Button } from '../common/Button';
 import { X, ExternalLink, AlertTriangle, ArrowRight, Sparkles, Cpu, Layers } from 'lucide-react';
+import { formatAccuracy } from '../../utils/formatters';
 
 interface BlindSpotDrawerProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export const BlindSpotDrawer: React.FC<BlindSpotDrawerProps> = ({
               <div>
                 <span className="text-[10px] text-text-dim uppercase">Cluster Accuracy</span>
                 <div className="text-sm font-heading font-semibold text-failure glow-text-red mt-0.5">
-                  {blindSpot.accuracy}%
+                  {formatAccuracy(blindSpot.accuracy)}
                 </div>
               </div>
               <div className="mt-1">
