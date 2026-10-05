@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background-color: #120326;
+  color: #e2fdf5;
+  font-family: 'Share Tech Mono', 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+  /* Dark Dreamy 90s Vaporwave Desktop with Perspective Grid & Neon Stars */
+  background-image: 
+    radial-gradient(ellipse at 50% 10%, rgba(138, 43, 226, 0.35) 0%, transparent 60%),
+    radial-gradient(circle at 15% 85%, rgba(0, 255, 136, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(255, 0, 127, 0.15) 0%, transparent 50%),
+    linear-gradient(to right, rgba(138, 43, 226, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 136, 0.12) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-attachment: fixed;
+}
+
+/* 90s Vaporwave Synthwave Horizon Grid */
+.vapor-grid-horizon {
+  position: fixed;
+  bottom: 0;
+  left: -20%;
+  right: -20%;
+  height: 220px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 255, 136, 0.25) 1px, transparent 1px),
+    linear-gradient(to top, rgba(255, 0, 127, 0.25) 1px, transparent 1px);
+  background-size: 50px 30px;
+  transform: perspective(260px) rotateX(65deg);
+  transform-origin: bottom center;
+  pointer-events: none;
+  opacity: 0.35;
+  mask-image: linear-gradient(to bottom, transparent, black 60%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 60%);
+}
+
+/* Mac Style Window Container */
+.mac-window {
+  background: rgba(22, 6, 44, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(138, 43, 226, 0.6);
+  border-radius: 8px;
+  box-shadow: 
+    0 12px 36px -6px rgba(0, 0, 0, 0.75),
+    0 0 20px rgba(138, 43, 226, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.mac-window-header {
+  background: linear-gradient(90deg, #2b0b4e 0%, #4a157d 50%, #20073b 100%);
+  border-bottom: 1.5px solid rgba(138, 43, 226, 0.5);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #e2fdf5;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+
+.mac-window-header-purple {
+  background: linear-gradient(90deg, #3d0c5a 0%, #681896 50%, #280540 100%);
+  border-bottom: 1.5px solid rgba(213, 0, 249, 0.45);
+}
+
+.mac-window-header-green {
+  background: linear-gradient(90deg, #093322 0%, #10593c 50%, #082418 100%);
+  border-bottom: 1.5px solid rgba(0, 255, 136, 0.45);
+}
+
+/* Mac Traffic Light Dots [ Red, Yellow, Green ] */
+.mac-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mac-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.mac-dot-red {
+  background: linear-gradient(to bottom, #ff5f56, #e0443e);
+}
+.mac-dot-yellow {
+  background: linear-gradient(to bottom, #ffbd2e, #dea123);
+}
+.mac-dot-green {
+  background: linear-gradient(to bottom, #27c93f, #1aab29);
+}
+
+/* Vaporwave Glowing Text Utilities */
+.glow-green {
+  text-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.45);
+}
+.glow-purple {
+  text-shadow: 0 0 10px #d500f9, 0 0 20px rgba(213, 0, 249, 0.45);
+}
+.glow-cyan {
+  text-shadow: 0 0 10px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.45);
+}
+.glow-pink {
+  text-shadow: 0 0 10px #ff007f, 0 0 20px rgba(255, 0, 127, 0.45);
+}
+.glow-amber {
+  text-shadow: 0 0 10px #ffb300, 0 0 20px rgba(255, 179, 0, 0.45);
+}
+
+/* 90s Vaporwave Push Button with Gloss & Neon Edge */
+.vapor-btn {
+  background: linear-gradient(180deg, #7c4dff 0%, #4a148c 100%);
+  color: #ffffff;
+  border: 1px solid #b388ff;
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(124, 77, 255, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease-in-out;
+}
+.vapor-btn:hover {
+  background: linear-gradient(180deg, #9667ff 0%, #5d1aae 100%);
+  box-shadow: 0 0 18px rgba(124, 77, 255, 0.7);
+  transform: translateY(-1px);
+}
+.vapor-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 0 6px rgba(124, 77, 255, 0.3);
+}
+
+.vapor-btn-green {
+  background: linear-gradient(180deg, #00ff88 0%, #008f4c 100%);
+  color: #071f14;
+  border: 1px solid #66ffb3;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.vapor-btn-green:hover {
+  background: linear-gradient(180deg, #33ff9f 0%, #00ab5b 100%);
+  box-shadow: 0 0 18px rgba(0, 255, 136, 0.75);
+}
+
+.vapor-btn-pink {
+  background: linear-gradient(180deg, #ff007f 0%, #99004d 100%);
+  color: #ffffff;
+  border: 1px solid #ff66b3;
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.vapor-btn-pink:hover {
+  background: linear-gradient(180deg, #ff3399 0%, #b30059 100%);
+  box-shadow: 0 0 18px rgba(255, 0, 127, 0.75);
+}
+
+.vapor-btn-cyan {
+  background: linear-gradient(180deg, #00f0ff 0%, #00838f 100%);
+  color: #042028;
+  border: 1px solid #80f7ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.vapor-btn-cyan:hover {
+  background: linear-gradient(180deg, #33f3ff 0%, #0097a7 100%);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.75);
+}
+
+/* Custom 90s Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #100222;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c4dff 0%, #00ff88 100%);
+  border-radius: 4px;
+}
